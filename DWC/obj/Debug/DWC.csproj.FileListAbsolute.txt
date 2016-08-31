@@ -1,0 +1,21 @@
+D:\World Of Warcraft Classic\Interface\AddOns\DhrakPoker\DWC\DWC\bin\Debug\DWC.exe.config
+D:\World Of Warcraft Classic\Interface\AddOns\DhrakPoker\DWC\DWC\bin\Debug\DWC.exe
+D:\World Of Warcraft Classic\Interface\AddOns\DhrakPoker\DWC\DWC\bin\Debug\DWC.pdb
+D:\World Of Warcraft Classic\Interface\AddOns\DhrakPoker\DWC\DWC\obj\Debug\DWC.csprojResolveAssemblyReference.cache
+D:\World Of Warcraft Classic\Interface\AddOns\DhrakPoker\DWC\DWC\obj\Debug\DWC.Properties.Resources.resources
+D:\World Of Warcraft Classic\Interface\AddOns\DhrakPoker\DWC\DWC\obj\Debug\DWC.csproj.GenerateResource.Cache
+D:\World Of Warcraft Classic\Interface\AddOns\DhrakPoker\DWC\DWC\obj\Debug\DWC.exe
+D:\World Of Warcraft Classic\Interface\AddOns\DhrakPoker\DWC\DWC\obj\Debug\DWC.pdb
+D:\World Of Warcraft Classic\Interface\AddOns\DhrakPoker\DWC\DWC\obj\Debug\DWC.Folio.resources
+C:\Users\dhrakon\Documents\Visual Studio 2015\Projects\DWC\DWC\bin\Debug\DWC.exe.config
+C:\Users\dhrakon\Documents\Visual Studio 2015\Projects\DWC\DWC\obj\Debug\DWC.exe
+C:\Users\dhrakon\Documents\Visual Studio 2015\Projects\DWC\DWC\obj\Debug\DWC.pdb
+C:\Users\dhrakon\Documents\Visual Studio 2015\Projects\DWC\DWC\bin\Debug\DWC.exe
+C:\Users\dhrakon\Documents\Visual Studio 2015\Projects\DWC\DWC\bin\Debug\DWC.pdb
+C:\Users\dhrakon\Documents\Visual Studio 2015\Projects\DWC\DWC\obj\Debug\DWC.csprojResolveAssemblyReference.cache
+C:\Users\dhrakon\Documents\Visual Studio 2015\Projects\DWC\DWC\obj\Debug\DWC.Folio.resources
+C:\Users\dhrakon\Documents\Visual Studio 2015\Projects\DWC\DWC\obj\Debug\DWC.Properties.Resources.resources
+C:\Users\dhrakon\Documents\Visual Studio 2015\Projects\DWC\DWC\obj\Debug\DWC.csproj.GenerateResource.Cache
+C:\Users\dhrakon\Documents\Visual Studio 2015\Projects\DWC\DWC\bin\Debug\data\WelcomeMessage.txt
+C:\Users\dhrakon\Documents\Visual Studio 2015\Projects\DWC\DWC\bin\Debug\Newtonsoft.Json.dll
+C:\Users\dhrakon\Documents\Visual Studio 2015\Projects\DWC\DWC\bin\Debug\Newtonsoft.Json.xml

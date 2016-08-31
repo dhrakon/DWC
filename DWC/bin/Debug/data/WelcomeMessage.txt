@@ -1,0 +1,5 @@
+﻿Welcome to Deathwatch Character folio
+Designed and coded by Dhrakon
+
+
+Please create a new kill team, or load an existing one to begin.
