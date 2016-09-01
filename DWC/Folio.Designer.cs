@@ -41,15 +41,20 @@
             this.tabWelcome = new System.Windows.Forms.TabPage();
             this.txtWelcome = new System.Windows.Forms.TextBox();
             this.tabPageAgent = new System.Windows.Forms.TabPage();
+            this.cboChapters = new System.Windows.Forms.ComboBox();
+            this.textBox1 = new System.Windows.Forms.TextBox();
             this.txtAgentName = new System.Windows.Forms.TextBox();
+            this.txtChapter = new System.Windows.Forms.Label();
+            this.lblXP = new System.Windows.Forms.Label();
             this.lblAgentName = new System.Windows.Forms.Label();
             this.tabPageInfo = new System.Windows.Forms.TabPage();
             this.tabSubInfo = new System.Windows.Forms.TabControl();
             this.tabPageDetails = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.tabDebug = new System.Windows.Forms.TabPage();
+            this.btnGenerateChapters = new System.Windows.Forms.Button();
             this.flowLayoutAgents = new System.Windows.Forms.FlowLayoutPanel();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.lblXP = new System.Windows.Forms.Label();
+            this.lblRank = new System.Windows.Forms.Label();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.tabControl.SuspendLayout();
@@ -57,6 +62,7 @@
             this.tabPageAgent.SuspendLayout();
             this.tabPageInfo.SuspendLayout();
             this.tabSubInfo.SuspendLayout();
+            this.tabDebug.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip
@@ -85,13 +91,13 @@
             this.newKillTeamToolStripMenuItem,
             this.newAgentToolStripMenuItem});
             this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-            this.newToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.newToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
             this.newToolStripMenuItem.Text = "New";
             // 
             // newKillTeamToolStripMenuItem
             // 
             this.newKillTeamToolStripMenuItem.Name = "newKillTeamToolStripMenuItem";
-            this.newKillTeamToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.newKillTeamToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
             this.newKillTeamToolStripMenuItem.Text = "Kill Team";
             this.newKillTeamToolStripMenuItem.Click += new System.EventHandler(this.newKillTeamToolStripMenuItem_Click);
             // 
@@ -99,21 +105,21 @@
             // 
             this.newAgentToolStripMenuItem.Enabled = false;
             this.newAgentToolStripMenuItem.Name = "newAgentToolStripMenuItem";
-            this.newAgentToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.newAgentToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
             this.newAgentToolStripMenuItem.Text = "Agent";
             this.newAgentToolStripMenuItem.Click += new System.EventHandler(this.newAgentToolStripMenuItem_Click);
             // 
             // saveKillTeamToolStripMenuItem
             // 
             this.saveKillTeamToolStripMenuItem.Name = "saveKillTeamToolStripMenuItem";
-            this.saveKillTeamToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.saveKillTeamToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
             this.saveKillTeamToolStripMenuItem.Text = "Save Kill Team";
             this.saveKillTeamToolStripMenuItem.Click += new System.EventHandler(this.saveKillTeamToolStripMenuItem_Click);
             // 
             // loadKillTeamToolStripMenuItem
             // 
             this.loadKillTeamToolStripMenuItem.Name = "loadKillTeamToolStripMenuItem";
-            this.loadKillTeamToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.loadKillTeamToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
             this.loadKillTeamToolStripMenuItem.Text = "Load Kill Team";
             this.loadKillTeamToolStripMenuItem.Click += new System.EventHandler(this.loadKillTeamToolStripMenuItem_Click);
             // 
@@ -140,11 +146,13 @@
             this.tabControl.Controls.Add(this.tabWelcome);
             this.tabControl.Controls.Add(this.tabPageAgent);
             this.tabControl.Controls.Add(this.tabPageInfo);
+            this.tabControl.Controls.Add(this.tabDebug);
             this.tabControl.Location = new System.Drawing.Point(12, 27);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
             this.tabControl.Size = new System.Drawing.Size(663, 469);
             this.tabControl.TabIndex = 2;
+            this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tabControl_SelectedIndexChanged);
             // 
             // tabWelcome
             // 
@@ -169,8 +177,11 @@
             // 
             // tabPageAgent
             // 
+            this.tabPageAgent.Controls.Add(this.lblRank);
+            this.tabPageAgent.Controls.Add(this.cboChapters);
             this.tabPageAgent.Controls.Add(this.textBox1);
             this.tabPageAgent.Controls.Add(this.txtAgentName);
+            this.tabPageAgent.Controls.Add(this.txtChapter);
             this.tabPageAgent.Controls.Add(this.lblXP);
             this.tabPageAgent.Controls.Add(this.lblAgentName);
             this.tabPageAgent.Location = new System.Drawing.Point(4, 22);
@@ -181,6 +192,22 @@
             this.tabPageAgent.Text = "Agent";
             this.tabPageAgent.UseVisualStyleBackColor = true;
             // 
+            // cboChapters
+            // 
+            this.cboChapters.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboChapters.FormattingEnabled = true;
+            this.cboChapters.Location = new System.Drawing.Point(114, 58);
+            this.cboChapters.Name = "cboChapters";
+            this.cboChapters.Size = new System.Drawing.Size(121, 21);
+            this.cboChapters.TabIndex = 3;
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(114, 32);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(100, 20);
+            this.textBox1.TabIndex = 2;
+            // 
             // txtAgentName
             // 
             this.txtAgentName.Location = new System.Drawing.Point(114, 6);
@@ -188,6 +215,24 @@
             this.txtAgentName.Size = new System.Drawing.Size(536, 20);
             this.txtAgentName.TabIndex = 1;
             this.txtAgentName.TextChanged += new System.EventHandler(this.txtAgentName_TextChanged);
+            // 
+            // txtChapter
+            // 
+            this.txtChapter.AutoSize = true;
+            this.txtChapter.Location = new System.Drawing.Point(6, 61);
+            this.txtChapter.Name = "txtChapter";
+            this.txtChapter.Size = new System.Drawing.Size(44, 13);
+            this.txtChapter.TabIndex = 0;
+            this.txtChapter.Text = "Chapter";
+            // 
+            // lblXP
+            // 
+            this.lblXP.AutoSize = true;
+            this.lblXP.Location = new System.Drawing.Point(6, 35);
+            this.lblXP.Name = "lblXP";
+            this.lblXP.Size = new System.Drawing.Size(21, 13);
+            this.lblXP.TabIndex = 0;
+            this.lblXP.Text = "XP";
             // 
             // lblAgentName
             // 
@@ -244,6 +289,26 @@
             this.tabPage2.Text = "tabPage2";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
+            // tabDebug
+            // 
+            this.tabDebug.Controls.Add(this.btnGenerateChapters);
+            this.tabDebug.Location = new System.Drawing.Point(4, 22);
+            this.tabDebug.Name = "tabDebug";
+            this.tabDebug.Size = new System.Drawing.Size(655, 443);
+            this.tabDebug.TabIndex = 3;
+            this.tabDebug.Text = "DEBUG";
+            this.tabDebug.UseVisualStyleBackColor = true;
+            // 
+            // btnGenerateChapters
+            // 
+            this.btnGenerateChapters.Location = new System.Drawing.Point(3, 3);
+            this.btnGenerateChapters.Name = "btnGenerateChapters";
+            this.btnGenerateChapters.Size = new System.Drawing.Size(145, 23);
+            this.btnGenerateChapters.TabIndex = 0;
+            this.btnGenerateChapters.Text = "Generate JSON";
+            this.btnGenerateChapters.UseVisualStyleBackColor = true;
+            this.btnGenerateChapters.Click += new System.EventHandler(this.btnGenerateJSON_Click);
+            // 
             // flowLayoutAgents
             // 
             this.flowLayoutAgents.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
@@ -254,21 +319,14 @@
             this.flowLayoutAgents.TabIndex = 3;
             this.flowLayoutAgents.ControlAdded += new System.Windows.Forms.ControlEventHandler(this.flowLayoutAgents_ControlAdded);
             // 
-            // textBox1
+            // lblRank
             // 
-            this.textBox1.Location = new System.Drawing.Point(114, 32);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(100, 20);
-            this.textBox1.TabIndex = 2;
-            // 
-            // lblXP
-            // 
-            this.lblXP.AutoSize = true;
-            this.lblXP.Location = new System.Drawing.Point(6, 35);
-            this.lblXP.Name = "lblXP";
-            this.lblXP.Size = new System.Drawing.Size(21, 13);
-            this.lblXP.TabIndex = 0;
-            this.lblXP.Text = "XP";
+            this.lblRank.AutoSize = true;
+            this.lblRank.Location = new System.Drawing.Point(220, 35);
+            this.lblRank.Name = "lblRank";
+            this.lblRank.Size = new System.Drawing.Size(49, 13);
+            this.lblRank.TabIndex = 4;
+            this.lblRank.Text = "[lblRank]";
             // 
             // Folio
             // 
@@ -293,6 +351,7 @@
             this.tabPageAgent.PerformLayout();
             this.tabPageInfo.ResumeLayout(false);
             this.tabSubInfo.ResumeLayout(false);
+            this.tabDebug.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -322,5 +381,10 @@
         private System.Windows.Forms.ToolStripMenuItem saveKillTeamToolStripMenuItem;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label lblXP;
+        private System.Windows.Forms.ComboBox cboChapters;
+        private System.Windows.Forms.Label txtChapter;
+        private System.Windows.Forms.TabPage tabDebug;
+        private System.Windows.Forms.Button btnGenerateChapters;
+        private System.Windows.Forms.Label lblRank;
     }
 }

@@ -12,56 +12,23 @@ namespace DWC
         {
             public static class Constants
             {
-                private static List<Chapter> Chapters = new List<Chapter>
-                {
-                    new Chapter() { Name =  "Black Templars" },
-                    new Chapter() { Name =  "Blood Angels" },
-                    new Chapter() { Name =  "Dark Angels" },
-                    new Chapter() { Name =  "Space Wolves" },
-                    new Chapter() { Name =  "Storm Wardens" },
-                    new Chapter() { Name =  "Ultramarines" }
-                };
-
-                private static List<Rank> Ranks = new List<Rank>()
-                {
-                    new Rank() { rank = 1, minXP = 13000, maxXP = 16999 },
-                    new Rank() { rank = 2, minXP = 17000, maxXP = 20999 },
-                    new Rank() { rank = 3, minXP = 21000, maxXP = 24999 },
-                    new Rank() { rank = 4, minXP = 25000, maxXP = 29999 },
-                    new Rank() { rank = 5, minXP = 30000, maxXP = 34999 },
-                    new Rank() { rank = 6, minXP = 35000, maxXP = 39999 },
-                    new Rank() { rank = 7, minXP = 40000, maxXP = 44999 },
-                    new Rank() { rank = 8, minXP = 45000, maxXP = 49999 }
-                };
-
-                public static Rank GetRankFromXP(int xp)
-                {
-                    foreach (Rank r in Ranks)
-                    {
-                        if (r.minXP <= xp && xp <= r.maxXP)
-                        {
-                            return r;
-                        }
-                    }
-                    Exception RankNotFound = new Exception(string.Format("Error in GetRankFromXP, Rank does not exist for provided XP: {0}", xp));
-                    throw RankNotFound;
-                }
-
-                public class Chapter
-                {
-                    public string Name;
-                }
-                public class Rank
-                {
-                    public int maxXP { get; set; }
-                    public int minXP { get; set; }
-                    public int rank { get; set; }
-                }
+                
             }
 
-            public static class Instance
+            public class DWRank
             {
-                public static KillTeam CurrentKillTeam;
+                public int maxXP { get; set; }
+                public int minXP { get; set; }
+                public int rank { get; set; }
+            }
+
+            public static class CurrentInstance
+            {
+                public static void Initialize() { }
+
+                public static DWKillTeam CurrentKillTeam;
+
+                public static List<DWChapter> Chapters;
 
                 public static DWAgent CreateNewAgent(string AgentName)
                 {
@@ -69,14 +36,69 @@ namespace DWC
                     CurrentKillTeam.Members.Add(a);
                     return a;
                 }
+
+                private static List<DWChapter> LoadChapters()
+                {
+                    return Dhrakk.Utility.LoadCustomObject<List<DWChapter>>(Dhrakk.Utility.GetDataPath() + "chapters.json");
+                }
+
+                static CurrentInstance()
+                {
+                    Chapters = LoadChapters();
+                }
+            }
+            
+            public class DWChapter
+            {
+                public string Name;
+                public DWDemeanour Demeanour;
+
+                public override string ToString()
+                {
+                    return Name;
+                }
+            }
+
+            public class DWDemeanour
+            {
+                public string Name;
+            }
+
+            public class DWSkillAdvance
+            {
+                public enum DWAdvanceSource
+                {
+                    GeneralSpaceMarine = 1,
+                    Deathwatch = 2,
+                    Chapter = 3,
+                    Specialty = 4
+                }
+
+                public enum DWAdvanceType
+                {
+                    Skill = 1,
+                    Talent = 2
+                }
+
+                //This is how many times the skill advance can be taken.
+                public int Multipier;
+                //Where is the skill advance defined?
+                public DWAdvanceSource AdvanceSource;
+                //What type of skill advance
+                public DWAdvanceType AdvanceType;
+                //What rank you have to be to have this skill advance
+                public DWRank RankRequirement;
+                //Any skill advancements that are pre-requisites.
+                public List<DWSkillAdvance> AdvancePrerequisites;
             }
 
             public class DWAgent
             {
                 [JsonIgnoreAttribute]
-                public AgentCheckbox AgentControl;
+                public DWAgentCheckbox AgentControl;
 
-                public Constants.Chapter Chapter;
+                public DWChapter Chapter;
+                public DWDemeanour Demeanour;
 
                 public int currentXP;
 
@@ -115,7 +137,7 @@ namespace DWC
                 public void GenerateAgentControl()
                 {
                     // Create a new button for the agent. This will live below the details for the user. It will be an easy way to switch agents.
-                    AgentControl = new AgentCheckbox();
+                    AgentControl = new DWAgentCheckbox();
                     AgentControl.Appearance = Appearance.Button;
                     AgentControl.Checked = true;
                     AgentControl.ParentAgent = this;
@@ -132,20 +154,20 @@ namespace DWC
                     return _Name;
                 }
 
-                public class AgentCheckbox : CheckBox
+                public class DWAgentCheckbox : CheckBox
                 {
                     public DWAgent ParentAgent { get; set; }
                 }
             }
 
-            public class KillTeam
+            public class DWKillTeam
             {
                 public List<DWAgent> Members;
                 public string Name, FullName;
                 public string SaveLocation;
                 public DWAgent SquadLeader;
                 public string Version = "0.0.0";
-                public KillTeam(string Name)
+                public DWKillTeam(string Name)
                 {
                     this.Name = Name;
                     Members = new List<DWAgent>();
@@ -174,7 +196,7 @@ namespace DWC
                 using (JsonReader reader = new JsonTextReader(sr))
                 {
                     // TODO write logic to verify changes for versions.
-                    Dhrakk.Game.KillTeam LoadedKT = serializer.Deserialize<Dhrakk.Game.KillTeam>(reader);
+                    Dhrakk.Game.DWKillTeam LoadedKT = serializer.Deserialize<Dhrakk.Game.DWKillTeam>(reader);
 
                     //Need to regenerate the checkbox controls for each newly loaded Agent.
                     foreach (Dhrakk.Game.DWAgent dw in LoadedKT.Members)
@@ -182,7 +204,7 @@ namespace DWC
                         dw.GenerateAgentControl();
                     }
 
-                    Dhrakk.Game.Instance.CurrentKillTeam = LoadedKT;
+                    Dhrakk.Game.CurrentInstance.CurrentKillTeam = LoadedKT;
                 }
             }
 
@@ -196,11 +218,38 @@ namespace DWC
 
                 //var json = JsonConvert.SerializeObject(Dhrakk.Game.Instance.CurrentKillTeam, new JsonSerializerSettings { TraceWriter = traceWriter });
 
-                using (StreamWriter sw = new StreamWriter(Dhrakk.Game.Instance.CurrentKillTeam.SaveLocation))
+                using (StreamWriter sw = new StreamWriter(Dhrakk.Game.CurrentInstance.CurrentKillTeam.SaveLocation))
                 using (JsonWriter writer = new JsonTextWriter(sw))
                 {
-                    serializer.Serialize(writer, Dhrakk.Game.Instance.CurrentKillTeam);
+                    serializer.Serialize(writer, Dhrakk.Game.CurrentInstance.CurrentKillTeam);
                 }
+            }
+
+            public static void SaveCustomObject<SomeObjectType>(SomeObjectType SomeObject, string FilePath)
+            {
+                JsonSerializer serializer = new JsonSerializer();
+                using (StreamWriter sw = new StreamWriter(FilePath))
+                using (JsonWriter writer = new JsonTextWriter(sw))
+                {
+                    serializer.Serialize(writer, SomeObject);
+                }
+            }
+
+            public static SomeObjectType LoadCustomObject<SomeObjectType>(string FilePath)
+            {
+                JsonSerializer serializer = new JsonSerializer();
+
+                using (StreamReader sr = new StreamReader(FilePath))
+                using (JsonReader reader = new JsonTextReader(sr))
+                {
+                    // TODO write logic to verify changes for versions.
+                    return serializer.Deserialize<SomeObjectType>(reader);
+                }
+            }
+
+            public static string GetDataPath()
+            {
+                return AppDomain.CurrentDomain.BaseDirectory + @"data\";
             }
 
             public class UserResponse

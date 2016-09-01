@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 
@@ -14,14 +15,27 @@ namespace DWC
             Stale = 2,
             Debug = 3
         }
+        private FormState CurrentFormState;
 
         public Folio()
         {
             InitializeComponent();
+            Dhrakk.Game.CurrentInstance.Initialize();
+
+            LoadToControls();
 
             SetWelcome();
 
             SetFormState(FormState.Fresh);
+        }
+
+        private void LoadToControls()
+        {
+            //Load the Chapters Combo Box.
+            foreach(Dhrakk.Game.DWChapter Chapter in Dhrakk.Game.CurrentInstance.Chapters)
+            {
+                cboChapters.Items.Add(Chapter);
+            }
         }
 
         public bool IsDirty()
@@ -41,30 +55,30 @@ namespace DWC
 
         private void AgentButton_Click(object sender, EventArgs e)
         {
-            if (((Dhrakk.Game.DWAgent.AgentCheckbox)sender).ParentAgent.Equals(CurrentAgent))
+            if (((Dhrakk.Game.DWAgent.DWAgentCheckbox)sender).ParentAgent.Equals(CurrentAgent))
             {
                 //Do nothing.
             }
             else
             {
                 CurrentAgent.AgentControl.Checked = false;
-                LoadAgentToControls(((Dhrakk.Game.DWAgent.AgentCheckbox)sender).ParentAgent);
+                LoadAgentToControls(((Dhrakk.Game.DWAgent.DWAgentCheckbox)sender).ParentAgent);
             }
         }
 
         private void CreateNewAgent()
         {
-            Dhrakk.Game.DWAgent newAgent = Dhrakk.Game.Instance.CreateNewAgent("New Agent");
+            Dhrakk.Game.DWAgent newAgent = Dhrakk.Game.CurrentInstance.CreateNewAgent("New Agent");
             flowLayoutAgents.Controls.Add(newAgent.AgentControl);
             LoadAgentToControls(newAgent);
         }
 
         private void flowLayoutAgents_ControlAdded(object sender, ControlEventArgs e)
         {
-            if (e.Control is Dhrakk.Game.DWAgent.AgentCheckbox)
+            if (e.Control is Dhrakk.Game.DWAgent.DWAgentCheckbox)
             {
-                ((Dhrakk.Game.DWAgent.AgentCheckbox)e.Control).CheckedChanged += AgentButton_CheckedChanged;
-                ((Dhrakk.Game.DWAgent.AgentCheckbox)e.Control).Click += AgentButton_Click;
+                ((Dhrakk.Game.DWAgent.DWAgentCheckbox)e.Control).CheckedChanged += AgentButton_CheckedChanged;
+                ((Dhrakk.Game.DWAgent.DWAgentCheckbox)e.Control).Click += AgentButton_Click;
             }
         }
 
@@ -74,11 +88,11 @@ namespace DWC
 
             foreach (object FlowAgent in flowLayoutAgents.Controls)
             {
-                if (FlowAgent is Dhrakk.Game.DWAgent.AgentCheckbox)
+                if (FlowAgent is Dhrakk.Game.DWAgent.DWAgentCheckbox)
                 {
-                    if (!((Dhrakk.Game.DWAgent.AgentCheckbox)FlowAgent).ParentAgent.Equals(CurrentAgent))
+                    if (!((Dhrakk.Game.DWAgent.DWAgentCheckbox)FlowAgent).ParentAgent.Equals(CurrentAgent))
                     {
-                        ((Dhrakk.Game.DWAgent.AgentCheckbox)FlowAgent).Checked = false;
+                        ((Dhrakk.Game.DWAgent.DWAgentCheckbox)FlowAgent).Checked = false;
                     }
                 }
             }
@@ -103,6 +117,13 @@ namespace DWC
                     newAgentToolStripMenuItem.Enabled = false;
                     saveKillTeamToolStripMenuItem.Enabled = false;
 
+                    if (!tabControl.TabPages.Contains(tabWelcome))
+                        tabControl.TabPages.Insert(0, tabWelcome);
+
+                    tabWelcome.Focus();
+
+                    CurrentFormState = FormState.Fresh;
+
                     ClearControls();
 
                     break;
@@ -110,10 +131,13 @@ namespace DWC
                     UnloadWelcome();
                     newAgentToolStripMenuItem.Enabled = true;
                     saveKillTeamToolStripMenuItem.Enabled = true;
+
+                    CurrentFormState = FormState.Stale;
                     break;
 
                 case FormState.Debug:
 
+                    CurrentFormState = FormState.Debug;
                     break;
             }
         }
@@ -124,6 +148,7 @@ namespace DWC
             
             //Controls on the Agent Tab.
             txtAgentName.Text = "";
+            lblRank.Text = "";
 
             CurrentAgent = null;
         }
@@ -141,12 +166,12 @@ namespace DWC
 
                 Dhrakk.Utility.Load(ofd.FileName);
 
-                foreach (Dhrakk.Game.DWAgent dw in Dhrakk.Game.Instance.CurrentKillTeam.Members)
+                foreach (Dhrakk.Game.DWAgent dw in Dhrakk.Game.CurrentInstance.CurrentKillTeam.Members)
                 {
                     flowLayoutAgents.Controls.Add(dw.AgentControl);
                 }
 
-                LoadAgentToControls(Dhrakk.Game.Instance.CurrentKillTeam.Members[0]);
+                LoadAgentToControls(Dhrakk.Game.CurrentInstance.CurrentKillTeam.Members[0]);
 
                 SetFormState(FormState.Stale);
             }
@@ -167,7 +192,7 @@ namespace DWC
             if (!response.Canceled)
             {
                 SetFormState(FormState.Fresh);
-                UpdateKillTeam(new Dhrakk.Game.KillTeam(response.ToString()));
+                UpdateKillTeam(new Dhrakk.Game.DWKillTeam(response.ToString()));
 
                 CreateNewAgent();
                 SetFormState(FormState.Stale);
@@ -176,7 +201,7 @@ namespace DWC
 
         private void saveKillTeamToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (String.IsNullOrEmpty(Dhrakk.Game.Instance.CurrentKillTeam.SaveLocation))
+            if (String.IsNullOrEmpty(Dhrakk.Game.CurrentInstance.CurrentKillTeam.SaveLocation))
             {
                 SaveFileDialog sfd = new SaveFileDialog();
                 sfd.Filter = "Deathwatch Companion Files (*.dwc)|*.dwc";
@@ -184,7 +209,7 @@ namespace DWC
 
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
-                    Dhrakk.Game.Instance.CurrentKillTeam.SaveLocation = sfd.FileName;
+                    Dhrakk.Game.CurrentInstance.CurrentKillTeam.SaveLocation = sfd.FileName;
                     Dhrakk.Utility.Save();
                 }
             }
@@ -221,17 +246,17 @@ namespace DWC
                 tabControl.TabPages.Remove(tabWelcome);
         }
 
-        private void UpdateKillTeam(Dhrakk.Game.KillTeam KillTeam)
+        private void UpdateKillTeam(Dhrakk.Game.DWKillTeam KillTeam)
         {
-            Dhrakk.Game.Instance.CurrentKillTeam = KillTeam;
+            Dhrakk.Game.CurrentInstance.CurrentKillTeam = KillTeam;
             UpdateStatusBar();
         }
 
         private void UpdateStatusBar()
         {
             string statusText;
-            statusText = "Deathwatch Companion v" + Dhrakk.Game.Instance.CurrentKillTeam.Version;
-            statusText += " - " + Dhrakk.Game.Instance.CurrentKillTeam.ToString();
+            statusText = "Deathwatch Companion v" + Dhrakk.Game.CurrentInstance.CurrentKillTeam.Version;
+            statusText += " - " + Dhrakk.Game.CurrentInstance.CurrentKillTeam.ToString();
 
             if (CurrentAgent != null)
             {
@@ -239,6 +264,38 @@ namespace DWC
             }
 
             toolStripStatusKillTeam.Text = statusText;
+        }
+
+        private void btnGenerateJSON_Click(object sender, EventArgs e)
+        {
+            string SaveLocation = @"c:\users\dhrakon\Desktop\chapters2.json";
+
+            Dhrakk.Game.DWChapter DarkAngels = new Dhrakk.Game.DWChapter() { Name = "Dark Angels" };
+            Dhrakk.Game.DWChapter BloodAngels = new Dhrakk.Game.DWChapter() { Name = "Blood Angels" };
+
+            Dhrakk.Game.DWDemeanour SonsOfTheLion = new Dhrakk.Game.DWDemeanour() { Name = "Sons of the Lion" };
+            Dhrakk.Game.DWDemeanour TheRedThirst = new Dhrakk.Game.DWDemeanour() { Name = "The Red Thirst" };
+
+            DarkAngels.Demeanour = SonsOfTheLion;
+            BloodAngels.Demeanour = TheRedThirst;
+
+            List<Dhrakk.Game.DWChapter> Chapters = new List<Dhrakk.Game.DWChapter>();
+
+            Chapters.Add(DarkAngels);
+            Chapters.Add(BloodAngels);
+
+            Dhrakk.Utility.SaveCustomObject<List<Dhrakk.Game.DWChapter>>(Chapters, SaveLocation);
+        }
+
+        private void tabControl_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (CurrentFormState == FormState.Fresh)
+            {
+                if (tabControl.SelectedIndex != 0)
+                {
+                    tabControl.SelectedIndex = 0;
+                }
+            }
         }
     }
 }
