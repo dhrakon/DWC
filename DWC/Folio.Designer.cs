@@ -55,7 +55,7 @@
             this.btnGenerateChapters = new System.Windows.Forms.Button();
             this.flowLayoutAgents = new System.Windows.Forms.FlowLayoutPanel();
             this.lblRank = new System.Windows.Forms.Label();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.grdCharacteristics = new System.Windows.Forms.DataGridView();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.tabControl.SuspendLayout();
@@ -64,7 +64,7 @@
             this.tabPageInfo.SuspendLayout();
             this.tabSubInfo.SuspendLayout();
             this.tabDebug.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.grdCharacteristics)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip
@@ -179,7 +179,7 @@
             // 
             // tabPageAgent
             // 
-            this.tabPageAgent.Controls.Add(this.dataGridView1);
+            this.tabPageAgent.Controls.Add(this.grdCharacteristics);
             this.tabPageAgent.Controls.Add(this.lblRank);
             this.tabPageAgent.Controls.Add(this.cboChapters);
             this.tabPageAgent.Controls.Add(this.textBox1);
@@ -331,13 +331,13 @@
             this.lblRank.TabIndex = 4;
             this.lblRank.Text = "[lblRank]";
             // 
-            // dataGridView1
+            // grdCharacteristics
             // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(471, 33);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(178, 150);
-            this.dataGridView1.TabIndex = 5;
+            this.grdCharacteristics.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.grdCharacteristics.Location = new System.Drawing.Point(471, 33);
+            this.grdCharacteristics.Name = "grdCharacteristics";
+            this.grdCharacteristics.Size = new System.Drawing.Size(178, 150);
+            this.grdCharacteristics.TabIndex = 5;
             // 
             // Folio
             // 
@@ -363,7 +363,7 @@
             this.tabPageInfo.ResumeLayout(false);
             this.tabSubInfo.ResumeLayout(false);
             this.tabDebug.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.grdCharacteristics)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -398,6 +398,6 @@
         private System.Windows.Forms.TabPage tabDebug;
         private System.Windows.Forms.Button btnGenerateChapters;
         private System.Windows.Forms.Label lblRank;
-        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.DataGridView grdCharacteristics;
     }
 }

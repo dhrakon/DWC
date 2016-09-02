@@ -125,6 +125,13 @@ namespace DWC
 
                 public class DWAgentCharacteristic
                 {
+                    /*
+                     * The reason that we need to make sure that DWAgentCharacteristic isn't just an extension of
+                     * DWCharacteristic is because we need to make sure that we can use one class, and reference it in
+                     * other places. This will allow us to directly compare, say if a talent requires 50 WS. The talent
+                     * will have (in it's pre-requisites object) an instance of a DWAgentCharacteristic (which will be
+                     * different instances), but they both will have the same DWCharacteristic reference. 
+                     */
                     DWCharacteristic Characteristic;
                     public DWAgentCharacteristic(DWCharacteristic Characteristic, int Value)
                     {
@@ -133,7 +140,7 @@ namespace DWC
                     }
 
                     int _value;
-                    int Value
+                    public int Value
                     {
                         get { return _value; }
                         set
@@ -151,6 +158,17 @@ namespace DWC
                                 _value = value;
                             }
                         }
+                    }
+
+                    // Return the base class values.
+                    public string ShortName
+                    {
+                        get { return Characteristic.ShortName; }
+                    }
+
+                    public string Name
+                    {
+                        get { return Characteristic.Name; }
                     }
                 }
                 public class DWAgentCheckbox : CheckBox

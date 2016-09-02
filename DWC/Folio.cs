@@ -26,7 +26,33 @@ namespace DWC
 
             SetWelcome();
 
+            SetupGrid();
+
             SetFormState(FormState.Fresh);
+        }
+
+        private void SetupGrid()
+        {
+            grdCharacteristics.AutoGenerateColumns = false;
+            grdCharacteristics.AutoSize = true;
+
+            DataGridViewColumn colShortName = new DataGridViewTextBoxColumn();
+            colShortName.DataPropertyName = "ShortName";
+            colShortName.Name = "Char";
+
+            grdCharacteristics.Columns.Add(colShortName);
+
+            DataGridViewColumn colValue = new DataGridViewTextBoxColumn();
+            colValue.DataPropertyName = "Value";
+            colValue.Name = "";
+
+            grdCharacteristics.Columns.Add(colValue);
+
+            DataGridViewColumn colBonus = new DataGridViewTextBoxColumn();
+            colBonus.Name = "+";
+
+            grdCharacteristics.Columns.Add(colBonus);
+
         }
 
         private void LoadToControls()
@@ -86,6 +112,7 @@ namespace DWC
         {
             CurrentAgent = Agent;
 
+            //Handle the checkboxes down at the bottom.
             foreach (object FlowAgent in flowLayoutAgents.Controls)
             {
                 if (FlowAgent is Dhrakk.Game.DWAgent.DWAgentCheckbox)
@@ -98,8 +125,16 @@ namespace DWC
             }
 
             Agent.AgentControl.Checked = true;
-
+            
+            //Start moving the data from the class to the controls.
             txtAgentName.Text = Agent.Name;
+
+            BindingSource bsChars = new BindingSource();
+            grdCharacteristics.DataSource = bsChars;
+            foreach ( Dhrakk.Game.DWAgent.DWAgentCharacteristic DWAC in Agent.Characteristics )
+            {
+                bsChars.Add(DWAC);
+            }
 
             UpdateStatusBar();
         }
