@@ -15,20 +15,19 @@ namespace DWC
                 
             }
 
-            public class DWRank
-            {
-                public int maxXP { get; set; }
-                public int minXP { get; set; }
-                public int rank { get; set; }
-            }
-
             public static class CurrentInstance
             {
-                public static void Initialize() { }
+                public static List<DWChapter> Chapters;
+
+                public static List<DWCharacteristic> Characteristics;
 
                 public static DWKillTeam CurrentKillTeam;
 
-                public static List<DWChapter> Chapters;
+                static CurrentInstance()
+                {
+                    Chapters = LoadChapters();
+                    Characteristics = LoadCharacteristics();
+                }
 
                 public static DWAgent CreateNewAgent(string AgentName)
                 {
@@ -37,76 +36,46 @@ namespace DWC
                     return a;
                 }
 
+                public static void Initialize() { }
                 private static List<DWChapter> LoadChapters()
                 {
                     return Dhrakk.Utility.LoadCustomObject<List<DWChapter>>(Dhrakk.Utility.GetDataPath() + "chapters.json");
                 }
-
-                static CurrentInstance()
+                private static List<DWCharacteristic> LoadCharacteristics()
                 {
-                    Chapters = LoadChapters();
+                    return Dhrakk.Utility.LoadCustomObject<List<DWCharacteristic>>(Dhrakk.Utility.GetDataPath() + "characteristics.json");
                 }
-            }
-            
-            public class DWChapter
-            {
-                public string Name;
-                public DWDemeanour Demeanour;
-
-                public override string ToString()
-                {
-                    return Name;
-                }
-            }
-
-            public class DWDemeanour
-            {
-                public string Name;
-            }
-
-            public class DWSkillAdvance
-            {
-                public enum DWAdvanceSource
-                {
-                    GeneralSpaceMarine = 1,
-                    Deathwatch = 2,
-                    Chapter = 3,
-                    Specialty = 4
-                }
-
-                public enum DWAdvanceType
-                {
-                    Skill = 1,
-                    Talent = 2
-                }
-
-                //This is how many times the skill advance can be taken.
-                public int Multipier;
-                //Where is the skill advance defined?
-                public DWAdvanceSource AdvanceSource;
-                //What type of skill advance
-                public DWAdvanceType AdvanceType;
-                //What rank you have to be to have this skill advance
-                public DWRank RankRequirement;
-                //Any skill advancements that are pre-requisites.
-                public List<DWSkillAdvance> AdvancePrerequisites;
             }
 
             public class DWAgent
             {
-                [JsonIgnoreAttribute]
+                [JsonIgnore]
                 public DWAgentCheckbox AgentControl;
 
                 public DWChapter Chapter;
-                public DWDemeanour Demeanour;
+
+                public List<DWAgentCharacteristic> Characteristics;
 
                 public int currentXP;
+
+                public DWDemeanour Demeanour;
 
                 private string _Name;
 
                 private Guid uid;
 
-                public DWAgent(string AgentName)
+                public DWAgent()
+                {
+                    this.Characteristics = new List<DWAgentCharacteristic>();
+
+                    foreach (DWCharacteristic characteristic in Dhrakk.Game.CurrentInstance.Characteristics)
+                    {
+                        DWAgent.DWAgentCharacteristic agentCharacteristic = new DWAgentCharacteristic(characteristic, 0);
+                        this.Characteristics.Add(agentCharacteristic);
+                    }
+                }
+
+                public DWAgent(string AgentName) : this()
                 {
                     // Create a new UID for the agent.
                     uid = Guid.NewGuid();
@@ -154,10 +123,81 @@ namespace DWC
                     return _Name;
                 }
 
+                public class DWAgentCharacteristic
+                {
+                    DWCharacteristic Characteristic;
+                    public DWAgentCharacteristic(DWCharacteristic Characteristic, int Value)
+                    {
+                        this.Characteristic = Characteristic;
+                        this.Value = Value;
+                    }
+
+                    int _value;
+                    int Value
+                    {
+                        get { return _value; }
+                        set
+                        {
+                            if (value > 100)
+                            {
+                                _value = 100;
+                            }
+                            else if (value < 0)
+                            {
+                                _value = 0;
+                            }
+                            else
+                            {
+                                _value = value;
+                            }
+                        }
+                    }
+                }
                 public class DWAgentCheckbox : CheckBox
                 {
                     public DWAgent ParentAgent { get; set; }
                 }
+            }
+
+            public class DWAttribute
+            {
+                public string Name;
+                public int Value;
+            }
+
+            public class DWChapter
+            {
+                public DWDemeanour Demeanour;
+                public string Name;
+                public override string ToString()
+                {
+                    return Name;
+                }
+            }
+
+            [JsonObject(IsReference = true)]
+            public class DWCharacteristic
+            {
+                public string Name;
+                public string ShortName;
+
+                public DWCharacteristic() { }
+
+                public DWCharacteristic(string Name, string ShortName) : this()
+                {
+                    this.Name = Name;
+                    this.ShortName = ShortName;
+                }
+
+                public override string ToString()
+                {
+                    return Name;
+                }
+            }
+
+            public class DWDemeanour
+            {
+                public string Name;
             }
 
             public class DWKillTeam
@@ -178,10 +218,99 @@ namespace DWC
                     return Name;
                 }
             }
+
+            public class DWPrerequisite
+            {
+                public List<object> Prerequisites;
+
+                public DWPrerequisite()
+                {
+                    Prerequisites = new List<object>();
+                }
+
+                public DWPrerequisite(params object[] Prerequisites) : this()
+                {
+                    for (int i = 0; i < Prerequisites.Length; i++)
+                    {
+                        this.Prerequisites.Add(Prerequisites[i]);
+                    }
+                }
+            }
+
+            [JsonObject(IsReference = true)]
+            public class DWRank
+            {
+                public int maxXP { get; set; }
+                public int minXP { get; set; }
+                public int rank { get; set; }
+            }
+            public class DWSkill
+            {
+                string Name;
+            }
+
+            [JsonObject(IsReference = true)]
+            public class DWSkillAdvance
+            {
+                //Where is the skill advance defined?
+                public DWAdvanceSource AdvanceSource;
+
+                //What type of skill advance
+                public DWAdvanceType AdvanceType;
+
+                //This is how many times the skill advance can be taken.
+                public int Multipier;
+
+                //A list of objects containing the prerequisites for this skill advance.
+                public List<object> Prerequisites;
+
+                [JsonIgnore]
+                private Guid uid;
+
+                public enum DWAdvanceSource
+                {
+                    GeneralSpaceMarine = 1,
+                    Deathwatch = 2,
+                    Chapter = 3,
+                    Specialty = 4
+                }
+
+                public enum DWAdvanceType
+                {
+                    Skill = 1,
+                    Talent = 2
+                }
+                public Guid UID
+                {
+                    get { return uid; }
+                }
+            }
+            public class DWSpecialty
+            {
+                public string Name;
+
+                public List<DWSkillAdvance> SpecialtySkillAdvancements;
+
+                public override string ToString()
+                {
+                    return Name;
+                }
+            }
+
+            public class DWTalent
+            {
+                public string Name;
+                
+            }
         }
 
         public static class Utility
-        { 
+        {
+
+            public static string GetDataPath()
+            {
+                return AppDomain.CurrentDomain.BaseDirectory + @"data\";
+            }
 
             public static UserResponse GetUserInput(string Prompt)
             {
@@ -205,6 +334,18 @@ namespace DWC
                     }
 
                     Dhrakk.Game.CurrentInstance.CurrentKillTeam = LoadedKT;
+                }
+            }
+
+            public static SomeObjectType LoadCustomObject<SomeObjectType>(string FilePath)
+            {
+                JsonSerializer serializer = new JsonSerializer();
+
+                using (StreamReader sr = new StreamReader(FilePath))
+                using (JsonReader reader = new JsonTextReader(sr))
+                {
+                    // TODO write logic to verify changes for versions.
+                    return serializer.Deserialize<SomeObjectType>(reader);
                 }
             }
 
@@ -234,24 +375,6 @@ namespace DWC
                     serializer.Serialize(writer, SomeObject);
                 }
             }
-
-            public static SomeObjectType LoadCustomObject<SomeObjectType>(string FilePath)
-            {
-                JsonSerializer serializer = new JsonSerializer();
-
-                using (StreamReader sr = new StreamReader(FilePath))
-                using (JsonReader reader = new JsonTextReader(sr))
-                {
-                    // TODO write logic to verify changes for versions.
-                    return serializer.Deserialize<SomeObjectType>(reader);
-                }
-            }
-
-            public static string GetDataPath()
-            {
-                return AppDomain.CurrentDomain.BaseDirectory + @"data\";
-            }
-
             public class UserResponse
             {
                 public bool Canceled = false;

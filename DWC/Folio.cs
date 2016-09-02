@@ -235,8 +235,8 @@ namespace DWC
 
         private void txtAgentName_TextChanged(object sender, EventArgs e)
         {
-            UpdateStatusBar();
             CurrentAgent.Name = txtAgentName.Text;
+            UpdateStatusBar();
         }
 
         private void UnloadWelcome()
@@ -268,23 +268,16 @@ namespace DWC
 
         private void btnGenerateJSON_Click(object sender, EventArgs e)
         {
-            string SaveLocation = @"c:\users\dhrakon\Desktop\chapters2.json";
+            string SaveLocation = @"c:\users\dhrakon\Desktop\characteristics.json";
 
-            Dhrakk.Game.DWChapter DarkAngels = new Dhrakk.Game.DWChapter() { Name = "Dark Angels" };
-            Dhrakk.Game.DWChapter BloodAngels = new Dhrakk.Game.DWChapter() { Name = "Blood Angels" };
+            List<Dhrakk.Game.DWCharacteristic> dwcs = new List<Dhrakk.Game.DWCharacteristic>();
+            Dhrakk.Game.DWCharacteristic WS = new Dhrakk.Game.DWCharacteristic() { Name = "Weapon Skill", ShortName = "WS" };
+            Dhrakk.Game.DWCharacteristic BS = new Dhrakk.Game.DWCharacteristic() { Name = "Ballistic Skill", ShortName = "BS" };
 
-            Dhrakk.Game.DWDemeanour SonsOfTheLion = new Dhrakk.Game.DWDemeanour() { Name = "Sons of the Lion" };
-            Dhrakk.Game.DWDemeanour TheRedThirst = new Dhrakk.Game.DWDemeanour() { Name = "The Red Thirst" };
+            dwcs.Add(WS);
+            dwcs.Add(BS);
 
-            DarkAngels.Demeanour = SonsOfTheLion;
-            BloodAngels.Demeanour = TheRedThirst;
-
-            List<Dhrakk.Game.DWChapter> Chapters = new List<Dhrakk.Game.DWChapter>();
-
-            Chapters.Add(DarkAngels);
-            Chapters.Add(BloodAngels);
-
-            Dhrakk.Utility.SaveCustomObject<List<Dhrakk.Game.DWChapter>>(Chapters, SaveLocation);
+            Dhrakk.Utility.SaveCustomObject<List<Dhrakk.Game.DWCharacteristic>>(dwcs, SaveLocation);
         }
 
         private void tabControl_SelectedIndexChanged(object sender, EventArgs e)

@@ -1,0 +1,47 @@
+﻿[
+   {
+      "$id":"char_WS",
+      "Name":"Weapon Skill",
+      "ShortName":"WS"
+   },
+   {
+      "$id":"char_BS",
+      "Name":"Ballistic Skill",
+      "ShortName":"BS"
+   },
+   {
+      "$id":"char_S",
+      "Name":"Strength",
+      "ShortName":"S"
+   },
+   {
+      "$id":"char_T",
+      "Name":"Toughness",
+      "ShortName":"T"
+   },
+   {
+      "$id":"char_Ag",
+      "Name":"Agility",
+      "ShortName":"Ag"
+   },
+   {
+      "$id":"char_Int",
+      "Name":"Intelligence",
+      "ShortName":"Int"
+   },
+   {
+      "$id":"char_Per",
+      "Name":"Perception",
+      "ShortName":"Per"
+   },
+   {
+      "$id":"char_WP",
+      "Name":"Willpower",
+      "ShortName":"WP"
+   },
+   {
+      "$id":"char_Fel",
+      "Name":"Fellowship",
+      "ShortName":"Fel"
+   }
+]
